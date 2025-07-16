@@ -1,0 +1,11 @@
+/home/xhuyz/prn231/lab/Application/Common/bin/Debug/net10.0/Common.deps.json
+/home/xhuyz/prn231/lab/Application/Common/bin/Debug/net10.0/Common.dll
+/home/xhuyz/prn231/lab/Application/Common/bin/Debug/net10.0/Common.pdb
+/home/xhuyz/prn231/lab/Application/Common/obj/Debug/net10.0/Common.GeneratedMSBuildEditorConfig.editorconfig
+/home/xhuyz/prn231/lab/Application/Common/obj/Debug/net10.0/Common.AssemblyInfoInputs.cache
+/home/xhuyz/prn231/lab/Application/Common/obj/Debug/net10.0/Common.AssemblyInfo.cs
+/home/xhuyz/prn231/lab/Application/Common/obj/Debug/net10.0/Common.csproj.CoreCompileInputs.cache
+/home/xhuyz/prn231/lab/Application/Common/obj/Debug/net10.0/Common.dll
+/home/xhuyz/prn231/lab/Application/Common/obj/Debug/net10.0/refint/Common.dll
+/home/xhuyz/prn231/lab/Application/Common/obj/Debug/net10.0/Common.pdb
+/home/xhuyz/prn231/lab/Application/Common/obj/Debug/net10.0/ref/Common.dll

@@ -1,0 +1,17 @@
+/home/xhuyz/prn231/lab/Application/DAL/obj/Debug/net10.0/DAL.csproj.AssemblyReference.cache
+/home/xhuyz/prn231/lab/Application/DAL/obj/Debug/net10.0/DAL.GeneratedMSBuildEditorConfig.editorconfig
+/home/xhuyz/prn231/lab/Application/DAL/obj/Debug/net10.0/DAL.AssemblyInfoInputs.cache
+/home/xhuyz/prn231/lab/Application/DAL/obj/Debug/net10.0/DAL.AssemblyInfo.cs
+/home/xhuyz/prn231/lab/Application/DAL/obj/Debug/net10.0/DAL.csproj.CoreCompileInputs.cache
+/home/xhuyz/prn231/lab/Application/DAL/bin/Debug/net10.0/DAL.deps.json
+/home/xhuyz/prn231/lab/Application/DAL/bin/Debug/net10.0/DAL.runtimeconfig.json
+/home/xhuyz/prn231/lab/Application/DAL/bin/Debug/net10.0/DAL.dll
+/home/xhuyz/prn231/lab/Application/DAL/bin/Debug/net10.0/DAL.pdb
+/home/xhuyz/prn231/lab/Application/DAL/bin/Debug/net10.0/Common.dll
+/home/xhuyz/prn231/lab/Application/DAL/bin/Debug/net10.0/Common.pdb
+/home/xhuyz/prn231/lab/Application/DAL/obj/Debug/net10.0/DAL.csproj.Up2Date
+/home/xhuyz/prn231/lab/Application/DAL/obj/Debug/net10.0/DAL.dll
+/home/xhuyz/prn231/lab/Application/DAL/obj/Debug/net10.0/refint/DAL.dll
+/home/xhuyz/prn231/lab/Application/DAL/obj/Debug/net10.0/DAL.pdb
+/home/xhuyz/prn231/lab/Application/DAL/obj/Debug/net10.0/DAL.genruntimeconfig.cache
+/home/xhuyz/prn231/lab/Application/DAL/obj/Debug/net10.0/ref/DAL.dll

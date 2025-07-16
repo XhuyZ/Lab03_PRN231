@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>🌸 Orchid Management</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      padding: 2rem;
+    }
+    .token-input {
+      font-size: 0.9rem;
+      font-family: monospace;
+    }
+    .admin-only {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h2 class="mb-4">🌸 Orchid Management</h2>
+
+  <!-- Token -->
+  <div class="mb-3">
+    <label class="form-label">🔐 Bearer Token (lấy từ Swagger)</label>
+    <input type="text" id="tokenInput" class="form-control token-input" placeholder="Bearer eyJhbGciOi...">
+    <button class="btn btn-sm btn-outline-primary mt-2" onclick="getCurrentUser()">🔎 Check Current User</button>
+  </div>
+
+  <!-- User Info -->
+  <div class="alert alert-info d-none" id="userInfoBox">
+    👤 Logged in as: <strong id="userFullName"></strong> (<span id="userEmail"></span>) - Role: <span id="userRole"></span>
+  </div>
+
+  <!-- Search -->
+  <div class="mb-3">
+    <input type="text" id="searchInput" class="form-control" placeholder="🔍 Search by name or description">
+    <div class="mt-2 d-flex gap-2">
+      <button class="btn btn-primary" onclick="searchOrchids()">Search</button>
+      <button class="btn btn-secondary" onclick="loadOrchids()">Reload All</button>
+    </div>
+  </div>
+
+  <!-- Orchid List -->
+  <ul class="list-group mb-4" id="orchidList"></ul>
+
+  <!-- Create Orchid -->
+  <div id="createBox" class="admin-only">
+    <h4>➕ Add New Orchid</h4>
+    <div class="row g-2 mb-3">
+      <div class="col-md-4">
+        <input type="text" id="nameInput" class="form-control" placeholder="Name">
+      </div>
+      <div class="col-md-4">
+        <input type="text" id="descInput" class="form-control" placeholder="Description">
+      </div>
+      <div class="col-md-4">
+        <button class="btn btn-success w-100" onclick="createOrchid()">Create</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentUser = null;
+    let currentRole = null;
+
+    function getToken() {
+      const raw = document.getElementById("tokenInput").value.trim();
+      return raw.startsWith("Bearer ") ? raw : `Bearer ${raw}`;
+    }
+
+    async function getCurrentUser() {
+      try {
+        const res = await fetch("/api/auth/me", {
+          headers: { "Authorization": getToken() }
+        });
+        if (!res.ok) throw new Error("Unauthorized");
+
+        const data = await res.json();
+        currentUser = data;
+
+        // Parse token để lấy role
+        const token = getToken().replace("Bearer ", "");
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        currentRole = payload["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+
+        document.getElementById("userInfoBox").classList.remove("d-none");
+        document.getElementById("userFullName").innerText = data.fullName;
+        document.getElementById("userEmail").innerText = data.email;
+        document.getElementById("userRole").innerText = currentRole;
+
+        // Nếu là ADMIN thì hiển thị form tạo
+        if (currentRole === "ADMIN") {
+          document.querySelectorAll(".admin-only").forEach(el => el.style.display = "block");
+        }
+
+        loadOrchids();
+      } catch (err) {
+        alert("❌ Failed to fetch user info. Check token!");
+      }
+    }
+
+    async function loadOrchids() {
+      const res = await fetch("/api/orchid", {
+        headers: { "Authorization": getToken() }
+      });
+      const data = await res.json();
+      renderOrchids(data);
+    }
+
+    async function searchOrchids() {
+      const keyword = document.getElementById("searchInput").value;
+      const res = await fetch(`/api/orchid/search?keyword=${encodeURIComponent(keyword)}`, {
+        headers: { "Authorization": getToken() }
+      });
+      const data = await res.json();
+      renderOrchids(data);
+    }
+
+    function renderOrchids(data) {
+      const list = document.getElementById("orchidList");
+      list.innerHTML = "";
+      data.forEach(o => {
+        const li = document.createElement("li");
+        li.className = "list-group-item d-flex justify-content-between align-items-center";
+        li.innerHTML = `
+          <div>
+            <strong>${o.name}</strong> - ${o.description}
+          </div>
+          <div>
+            ${currentRole === "ADMIN" ? `
+              <button class="btn btn-sm btn-warning me-1" onclick="updateOrchidPrompt(${o.id}, '${o.name}', '${o.description}')">Edit</button>
+              <button class="btn btn-sm btn-danger" onclick="deleteOrchid(${o.id})">Delete</button>
+            ` : ""}
+          </div>
+        `;
+        list.appendChild(li);
+      });
+    }
+
+    async function createOrchid() {
+      const name = document.getElementById("nameInput").value;
+      const description = document.getElementById("descInput").value;
+
+      const orchid = {
+        id: 0,
+        name,
+        description,
+        url: "",
+        price: 0,
+        categoryId: 0,
+        categoryName: "",
+        isNatural: true
+      };
+
+      const res = await fetch("/api/orchid", {
+        method: "POST",
+        headers: {
+          "Authorization": getToken(),
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(orchid)
+      });
+
+      if (res.ok) {
+        alert("✅ Created!");
+        loadOrchids();
+      } else {
+        alert("❌ Failed to create. Maybe you're not ADMIN?");
+      }
+    }
+
+    async function deleteOrchid(id) {
+      if (!confirm("Delete this orchid?")) return;
+
+      const res = await fetch(`/api/orchid/${id}`, {
+        method: "DELETE",
+        headers: { "Authorization": getToken() }
+      });
+
+      if (res.status === 204) {
+        alert("🗑️ Deleted");
+        loadOrchids();
+      } else {
+        alert("❌ Delete failed. Maybe you're not ADMIN?");
+      }
+    }
+
+    function updateOrchidPrompt(id, currentName, currentDesc) {
+      const name = prompt("Edit name:", currentName);
+      const description = prompt("Edit description:", currentDesc);
+      if (name && description) {
+        updateOrchid(id, name, description);
+      }
+    }
+
+    async function updateOrchid(id, name, description) {
+      const updated = {
+        id,
+        name,
+        description,
+        url: "",
+        price: 0,
+        categoryId: 0,
+        categoryName: "",
+        isNatural: true
+      };
+
+      const res = await fetch(`/api/orchid/${id}`, {
+        method: "PUT",
+        headers: {
+          "Authorization": getToken(),
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(updated)
+      });
+
+      if (res.ok) {
+        alert("✅ Updated");
+        loadOrchids();
+      } else {
+        alert("❌ Update failed. Maybe you're not ADMIN?");
+      }
+    }
+
+    // Load user info nếu có token sẵn
+    if (getToken().length > 10) getCurrentUser();
+  </script>
+</body>
+</html>
+
